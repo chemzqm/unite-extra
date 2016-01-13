@@ -34,7 +34,7 @@ You can want individual source, you can use:
     "command": "Update",
     "description": "Update vimrc in github",
     "args": 0
-  }}
+  }]
   ```
   where `command` is command name, description if the description hint, args is
   1 or 0, indicates whether this command need argument to run.
