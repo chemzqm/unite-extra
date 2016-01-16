@@ -46,7 +46,7 @@ You can want individual source, you can use:
 
 ## Notice
 
-The original command source of unite have to remove to removed to make new
+The original command source of unite have to be removed to make new
 command.vim take replace, or you can just copy the file into directory
 `~/.vim/autoload/unite/sources`
 
