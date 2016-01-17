@@ -76,7 +76,11 @@ function! s:source.action_table.browser.func(candidate)
   let content = webapi#json#decode(join(readfile(path . '/package.json'), ''))
   let page = get(content, 'homepage', 0)
   if empty(page) | return | endif
-  call system('open ' . page)
+  if exists(':Open')
+    execute 'Open ' . page
+  else
+    call system('open ' . page)
+  endif
 endfunction
 
 function! s:source.hooks.on_init(args, context) abort
