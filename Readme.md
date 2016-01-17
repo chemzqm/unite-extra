@@ -67,7 +67,7 @@ to download the `emoji.vim` into folder `.vim/autoload/unite/sources`
     *delete* delete the selected node.
 
 * **Project** source has one action which open unite file_rec buffer for file
-  choose of selected project.
+  choose.
 
 * **Node** source actions:
 
