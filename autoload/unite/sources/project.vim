@@ -15,10 +15,20 @@ let s:source.action_table.open = {
             \ 'is_quit' : 1
             \ }
 
+let s:source.action_table.tabopen = {
+            \ 'description' : 'open project in new tab',
+            \ 'is_quit' : 1
+            \ }
+
 
 function! s:source.action_table.open.func(candidate)
   execute 'lcd ' . a:candidate.source__project
   execute 'Unite -buffer-name=files file_rec/async:.'
+endfunction
+
+function! s:source.action_table.tabopen.func(candidate)
+  tabnew
+  execute 'Explore ' . a:candidate.source__project . '/'
 endfunction
 
 function! s:source.hooks.on_init(args, context) abort
