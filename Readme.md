@@ -6,7 +6,6 @@ Some extra unite sources that I made to make my life easier.
 * **command.vim** for list and insert command to command line, execute immediately
   if command doesn't need argument.
 * **project.vim** for quickly locate a project and open a file inside.
-* **note.vim** for list and open note of [vim-notes](https://github.com/xolox/vim-notes).
 * **node.vim** for works with *node_modules* of project contains current file.
 
 ## Install
@@ -25,7 +24,7 @@ to download the `emoji.vim` into folder `.vim/autoload/unite/sources`
 
 ## Configure
 
-* emoji, note and node source have zero configuration.
+* emoji, and node source have zero configuration.
 * command source requires a json file names `~/.vim/command.json`, it contains
   an array of command configs, like this:
   ``` json
@@ -59,12 +58,6 @@ to download the `emoji.vim` into folder `.vim/autoload/unite/sources`
     *add* open the file command.json for add a command.
 
     *edit* open the file command.json at the line of selected command for edit.
-
-* **Note** source actions:
-
-    *open* (default action) open the selected note.
-
-    *delete* delete the selected node.
 
 * **Project** source has one action which open unite file_rec buffer for file
   choose.
