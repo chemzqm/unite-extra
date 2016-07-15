@@ -38,13 +38,13 @@ function! s:source.action_table.execute.func(candidate)
 endfunction
 
 function! s:source.action_table.add.func(candidate)
-  exe 'edit' . s:file
+  exe 'slient edit' . s:file
   exe 'normal! G'
 endfunction
 
 function! s:source.action_table.edit.func(candidate)
   let command = a:candidate.source__command
-  exe 'edit +/"' . command . '" ' . s:file
+  exe 'silent edit +/"' . command . '" ' . s:file
   exe 'normal! zz'
   let cursor = getcurpos()
   let cursor[2] = 15
