@@ -50,7 +50,7 @@ function! s:source.action_table.update.func(candidate) abort
   if exists('*termopen')
     execute 'belowright 5new'
     set winfixheight
-    call termopen('npm update '.name.' --save', {
+    call termopen('npm update '.name.'@latest --save', {
           \ 'on_exit': function('s:OnUpdate'),
           \ 'source_path': a:candidate.source__path,
           \ 'buffer_nr': bufnr('%'),
