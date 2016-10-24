@@ -133,11 +133,10 @@ endfunction
 
 function! s:source.gather_candidates(args, context)
     let directory = s:GetPackageDir()
-    let list = s:Dependencies()
-    if empty(list)| return [] | endif
+    let dependencies = s:Dependencies()
+    if empty(dependencies)| return [] | endif
     let res = []
-    " TODO add version info
-    for item in list
+    for item in dependencies
       call add(res, {
             \ "word": item.name,
             \ "abbr": item.name,
