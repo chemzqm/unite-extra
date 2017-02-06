@@ -23,7 +23,7 @@ let s:source.action_table.tabopen = {
 
 function! s:source.action_table.open.func(candidate)
   execute 'lcd ' . a:candidate.source__project
-  execute 'Unite -buffer-name=files file_rec/async:.'
+  execute 'Unite -buffer-name=files file_rec'
 endfunction
 
 function! s:source.action_table.tabopen.func(candidate)

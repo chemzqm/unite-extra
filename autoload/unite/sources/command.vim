@@ -54,7 +54,7 @@ endfunction
 function! s:source.hooks.on_init(args, context) abort
    "name description args
   let a:context.source__bufnr = bufnr('%')
-  let a:context.source__data = webapi#json#decode(join(readfile(s:file), ''))
+  let a:context.source__data = json_decode(join(readfile(s:file), ''))
 endfunction
 
 function! s:source.hooks.on_close(args, context)

@@ -68,7 +68,7 @@ endfunction
 function! s:OnUpdate(job_id, status, event) dict
   if a:status == 0
     execute 'silent! bd! '.self.buffer_nr
-    let content = webapi#json#decode(join(readfile(self.source_path . '/package.json'), ''))
+    let content = json_decode(join(readfile(self.source_path . '/package.json'), ''))
     echohl WarningMsg | echon 'Updated '.content.name.' to '.content.version | echohl None
   endif
 endfunction
@@ -83,7 +83,7 @@ endfunction
 " Open main file
 function! s:source.action_table.main.func(candidate) abort
   let path = a:candidate.source__path
-  let content = webapi#json#decode(join(readfile(path . '/package.json'), ''))
+  let content = json_decode(join(readfile(path . '/package.json'), ''))
   let main = exists('content.main') ? content.main : 'index.js'
   let main = main =~# '\v\.js$' ? main : main . '.js'
   let file = simplify(path . '/' . main)
@@ -112,7 +112,7 @@ endfunction
 " Open module in browser
 function! s:source.action_table.browser.func(candidate)
   let path = a:candidate.source__path
-  let content = webapi#json#decode(join(readfile(path . '/package.json'), ''))
+  let content = json_decode(join(readfile(path . '/package.json'), ''))
   let page = get(content, 'homepage', 0)
   if empty(page) | return | endif
   if exists(':Open')
@@ -162,7 +162,7 @@ endfunction
 function! s:Dependencies() abort
   let dir = s:GetPackageDir()
   if empty(dir) | return | endif
-  let obj = webapi#json#decode(join(readfile(dir . '/package.json'), ''))
+  let obj = json_decode(join(readfile(dir . '/package.json'), ''))
   let browser = exists('obj.browser')
   let list = []
   let deps = browser ? keys(obj.browser) : []

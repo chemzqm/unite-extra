@@ -8,6 +8,8 @@ Some extra unite sources that I made to make my life easier.
 * **project.vim** for quickly locate a project and open a file inside.
 * **node.vim** for works with *node_modules* of project contains current file.
 
+**Note:** `json_decode` is used, make sure `echo exists('json_decode')` is `1`.
+
 ## Install
 
 [vim-plug](https://github.com/junegunn/vim-plug) is my recommended vim plugin manager,
