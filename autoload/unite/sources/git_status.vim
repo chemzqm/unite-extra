@@ -78,13 +78,25 @@ function! s:source.action_table.delete.func(candidates) abort
 endfunction
 
 function! s:source.action_table.reset.func(candidates) abort
-  let paths = map(copy(a:candidates), "v:val['action__path']")
-  if len(paths)
-    let root = a:candidates[0].source__root
-    execute 'lcd ' . root
-    call s:system('git reset HEAD -- '. join(paths, ' '))
-    call unite#force_redraw()
-  endif
+  if !len(a:candidates) | return | endif
+  let root = a:candidates[0].source__root
+  execute 'lcd ' . root
+  let modified = []
+  for item in a:candidates
+    let path = item.action__path
+    if item.source__modify
+      call s:system('git checkout -- '. path)
+      call add(modified, path)
+    else
+      call s:system('git reset HEAD -- '. path)
+    endif
+  endfor
+  for p in modified
+    if bufexists(p)
+      echo p
+    endif
+  endfor
+  call unite#force_redraw()
 endfunction
 
 function! s:source.action_table.commit.func(candidate) abort
@@ -107,6 +119,7 @@ function! s:git_status_to_unite(val, source__root)
         \	'source': 'git_status',
         \	'kind': 'file',
         \ 'word': word,
+        \ 'source__modify': work_tree_status_symbol == '~',
         \ 'source__root': a:source__root,
         \	'action__path' : path
         \	}
