@@ -91,11 +91,7 @@ function! s:source.action_table.reset.func(candidates) abort
       call s:system('git reset HEAD -- '. path)
     endif
   endfor
-  for p in modified
-    if bufexists(p)
-      echo p
-    endif
-  endfor
+  checktime
   call unite#force_redraw()
 endfunction
 
