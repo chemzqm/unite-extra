@@ -7,17 +7,17 @@ Some extra unite sources that I made to make my life easier.
   if command doesn't need argument.
 * **project.vim** for quickly locate a project and open a file inside.
 * **node.vim** for works with *node_modules* of project contains current file.
+* **git_status.vim** for works with git status
 
 **Note:** `json_decode` is used, make sure `echo exists('json_decode')` is `1`.
 
 ## Install
 
-[vim-plug](https://github.com/junegunn/vim-plug) is my recommended vim plugin manager,
-you can install unite-extra like this:
+Take [vim-plug](https://github.com/junegunn/vim-plug) for example:
 
     Plug chemzqm/unite-extra
 
-If you just need individual source, you can use eg:
+If you just need individual source, you can use command:
 
     curl -fLo ~/.vim/autoload/unite/sources --create-dirs \
     https://raw.githubusercontent.com/chemzqm/unite-extra/master/utoload/unite/sources/emoji.vim
