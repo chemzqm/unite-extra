@@ -54,11 +54,9 @@ function! s:system(command)
 endfunction
 
 function! s:source.action_table.add.func(candidates) abort
-  let paths = map(copy(a:candidates), "v:val['action__path']")
+  let paths = map(copy(a:candidates), "v:val['source__path']")
 
   if len(paths)
-    let root = a:candidates[0].source__root
-    execute 'lcd ' . root
     call s:system('git add ' . join(paths, ' '))
     call unite#force_redraw()
   endif
@@ -66,10 +64,8 @@ endfunction
 
 function! s:source.action_table.delete.func(candidates) abort
   if !len(a:candidates) | return | endif
-  let root = a:candidates[0].source__root
-  execute 'lcd ' . root
   for item in a:candidates
-    let p = item.action__path
+    let p = item.source__path
     if filereadable(p)
       execute 'Rm ' . p
     endif
@@ -79,16 +75,21 @@ endfunction
 
 function! s:source.action_table.reset.func(candidates) abort
   if !len(a:candidates) | return | endif
-  let root = a:candidates[0].source__root
-  execute 'lcd ' . root
-  let modified = []
   for item in a:candidates
-    let path = item.action__path
-    if item.source__modify
+    let path = item.source__path
+    if item.source__tree && item.source__staged
+      let res = input('Select action for '.path.' [checkout/reset]?')
+      if res =~ 'c'
+        call s:system('git checkout -- '. path)
+      elseif res =~ 'r'
+        call s:system('git reset HEAD -- '. path)
+      endif
+    elseif item.source__tree
       call s:system('git checkout -- '. path)
-      call add(modified, path)
-    else
+    elseif item.source__staged
       call s:system('git reset HEAD -- '. path)
+    else
+      echoerr 'Can''t checkout or reset'
     endif
   endfor
   checktime
@@ -98,11 +99,12 @@ endfunction
 function! s:source.action_table.commit.func(candidate) abort
   let root = a:candidate.source__root
   wincmd p
-  let path = fnamemodify(simplify(root . '/' . a:candidate.action__path), ':~:.')
+  let path = fnamemodify(simplify(root . '/' . a:candidate.source__path), ':~:.')
   execute 'Gcommit -v -- ' . path
 endfunction
 
-function! s:git_status_to_unite(val, source__root)
+function! s:git_status_to_unite(val)
+  let root = getcwd()
   let index_status = a:val[0]
   let work_tree_status = a:val[1]
   let rest = strpart(a:val, 3)
@@ -112,12 +114,14 @@ function! s:git_status_to_unite(val, source__root)
   let work_tree_status_symbol = s:status_symbol_map[work_tree_status]
   let word = index_status_symbol . work_tree_status_symbol . ' ' . rest
   return {
-        \	'source': 'git_status',
-        \	'kind': 'file',
+        \ 'source': 'git_status',
+        \ 'kind': 'file',
         \ 'word': word,
-        \ 'source__modify': work_tree_status_symbol == '~',
-        \ 'source__root': a:source__root,
-        \	'action__path' : path
+        \ 'action__path': root . '/' . path,
+        \ 'source__staged': index_status_symbol !~# '^\(\s\|?\)$',
+        \ 'source__tree': work_tree_status_symbol !~# '^\(\s\|?\)$',
+        \ 'source__root': root,
+        \	'source__path' : path
         \	}
 endfunction
 
@@ -134,12 +138,14 @@ function! s:source.gather_candidates(args, context)
   execute 'lcd '.root
   let raw = system('git status --porcelain -uall')
   let lines = split(raw, '\n')
-  let candidates = map(lines, "s:git_status_to_unite(v:val,'".a:context.source__root."')")
+  let candidates = map(lines, "s:git_status_to_unite(v:val)")
   execute 'lcd '.old_cwd
   return candidates
 endfunction
 
 function! s:source.hooks.on_syntax(args, context)
+  let root = a:context.source__root
+  execute 'lcd '.root
   syntax case ignore
   syntax match uniteGitStatusHeader /^.*$/
         \ containedin=uniteSource__uniteGitStatus
