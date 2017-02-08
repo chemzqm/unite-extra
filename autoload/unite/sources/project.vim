@@ -27,8 +27,17 @@ function! s:source.action_table.open.func(candidate)
 endfunction
 
 function! s:source.action_table.tabopen.func(candidate)
-  tabnew
-  execute 'Explore ' . a:candidate.source__project . '/'
+  call s:osascript(
+      \ 'tell application "iTerm2"',
+      \   'tell current window',
+      \     'create tab with default profile',
+      \     'tell current session',
+      \       'delay 0.1',
+      \       'write text "cd '.s:escape(a:candidate.source__project).'"',
+      \       'write text "clear"',
+      \     'end tell',
+      \   'end tell',
+      \ 'end tell')
 endfunction
 
 function! s:source.hooks.on_init(args, context) abort
@@ -72,6 +81,19 @@ endfunction
 
 function! unite#sources#project#define()
   return s:source
+endfunction
+
+function! s:escape(filepath)
+  return "'".substitute(a:filepath, "'", "\\'", 'g')."'"
+endfunction
+
+function! s:osascript(...) abort
+  let args = join(map(copy(a:000), '" -e ".shellescape(v:val)'), '')
+  let output = system('osascript'. args)
+  if v:shell_error && output !=# ""
+    echohl Error | echon output | echohl None
+    return
+  endif
 endfunction
 
 let &cpo = s:save_cpo
