@@ -18,9 +18,9 @@ let s:source = {
       \      'is_selectable': 1,
       \    },
       \    'delete': {
-      \      'description': 'remove file',
+      \      'description': 'git diff',
       \      'is_quit': 0,
-      \      'is_selectable': 1,
+      \      'is_selectable': 0,
       \    },
       \    'reset': {
       \      'description': 'git reset HEAD',
@@ -54,7 +54,7 @@ function! s:system(command)
 endfunction
 
 function! s:source.action_table.add.func(candidates) abort
-  let paths = map(copy(a:candidates), "v:val['source__path']")
+  let paths = map(copy(a:candidates), "shellescape(v:val['source__path'])")
 
   if len(paths)
     call s:system('git add ' . join(paths, ' '))
@@ -62,15 +62,11 @@ function! s:source.action_table.add.func(candidates) abort
   endif
 endfunction
 
-function! s:source.action_table.delete.func(candidates) abort
-  if !len(a:candidates) | return | endif
-  for item in a:candidates
-    let p = item.source__path
-    if filereadable(p)
-      execute 'Rm ' . p
-    endif
-  endfor
-  call unite#force_redraw()
+function! s:source.action_table.delete.func(candidate) abort
+  let root = a:candidate.source__root
+  wincmd p
+  let path = fnamemodify(simplify(root . '/' . a:candidate.source__path), ':~:.')
+  call easygit#diffShow(path, 'split')
 endfunction
 
 function! s:source.action_table.reset.func(candidates) abort
@@ -89,7 +85,7 @@ function! s:source.action_table.reset.func(candidates) abort
     elseif item.source__staged
       call s:system('git reset HEAD -- '. path)
     else
-      echoerr 'Can''t checkout or reset'
+      execute 'Rm ' . path
     endif
   endfor
   checktime
