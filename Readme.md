@@ -1,5 +1,7 @@
 # Unite-extra
 
+**This project is deprecated, consider use [denite-extra](https://github.com/chemzqm/denite-extra) instead.**
+
 Some extra unite sources that I made to make my life easier.
 
 * **emoji.vim** for list and insert emoji.
