@@ -57,8 +57,6 @@ function! s:source.action_table.update.func(candidate) abort
           \})
     call setbufvar('%', 'is_autorun', 1)
     execute 'wincmd p'
-
-    execute 
   else
     execute '!npm update '.name.' --save'
   endif
